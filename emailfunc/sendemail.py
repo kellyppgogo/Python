@@ -7,13 +7,12 @@ from email.utils import formataddr
 
 sender = "kellypql@126.com"
 password = "Winner123"
-# receivers = "312200746@qq.com"
 
 
 def sendExcel(receivers, subject, filepath, filename):
     msg = MIMEMultipart('related')
     msg['From'] = formataddr(["sender", sender])  # 发件人邮箱昵称、发件人邮箱账号
-    msg['To'] = formataddr(["receiver", receivers])  # 收件人邮箱昵称、收件人邮箱账号
+    msg['To'] = receivers  #formataddr(["receiver", receivers]) 收件人邮箱昵称、收件人邮箱账号
     msg['Subject'] = subject
     text = MIMEText('Python 邮件发送测试...', 'plain', 'utf-8')
     msg.attach(text)

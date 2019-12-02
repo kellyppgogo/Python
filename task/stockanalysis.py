@@ -5,11 +5,16 @@ import xlwt
 
 
 # add parent directory to import module
-sys.path.append("..")
+# sys.path.append("..")
 stocks_to_be_saved_sorted = []
 header = ["bond_id", "bond_nm", "stock_id", "price", "premium_rt", "calculated_result"]
-output_path = "/Users/kellypan/git/experience/intelligence/"
-file_name = "bondInfomation.xls"
+properties_dict = {}
+
+
+def __init__():
+    from intelligence.util.Util import Properties
+    global properties_dict
+    properties_dict = Properties("../config/bond_info_config").getProperties()
 
 
 def takecomparekey(item):
@@ -67,13 +72,18 @@ def getbondlist():
 
 
 def mainjob():
+    __init__()
     stocks_to_be_saved_sorted = getbondlist()
     print("number of stocks to be saved:" + str(len(stocks_to_be_saved_sorted)))
 
+    output_path = properties_dict.get("output_path")
+    file_name = properties_dict.get("file_name")
     writetoexcel(header, stocks_to_be_saved_sorted, output_path + file_name)
     print("Successfully generate the excel in " + output_path)
 
     from intelligence.emailfunc import sendemail
-    email_addr = "312200746@qq.com"
-    print("send file to email " + email_addr)
-    sendemail.sendExcel(email_addr, "可转债列表", output_path + file_name, file_name)
+    email_addr = properties_dict.get("email_receiver")
+    email_addr_list = email_addr.split(',')
+    for email in email_addr_list:
+        print("send file to email " + email_addr)
+        sendemail.sendExcel(email, "可转债列表", output_path + file_name, file_name)
